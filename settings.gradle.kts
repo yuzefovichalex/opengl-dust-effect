@@ -14,5 +14,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Dust Effect"
-include(":app")
+include(":sample")
 include(":dust-effect")
