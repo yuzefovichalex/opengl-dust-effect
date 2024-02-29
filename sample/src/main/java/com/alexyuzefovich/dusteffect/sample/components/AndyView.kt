@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.updateLayoutParams
 import com.alexyuzefovich.dusteffect.sample.model.Andy
+import kotlin.math.min
 
 class AndyView(context: Context) : FrameLayout(context) {
 
@@ -13,8 +15,13 @@ class AndyView(context: Context) : FrameLayout(context) {
 
 
     init {
-        imageView = ImageView(context).apply {
-            layoutParams = LayoutParams(720, 720)
+        imageView = object : AppCompatImageView(context) {
+            override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+                val desiredWidth = MeasureSpec.getSize(widthMeasureSpec)
+                val size = min(desiredWidth, 720)
+                val sizeSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY)
+                super.onMeasure(sizeSpec, sizeSpec)
+            }
         }.also {
             addView(it)
         }

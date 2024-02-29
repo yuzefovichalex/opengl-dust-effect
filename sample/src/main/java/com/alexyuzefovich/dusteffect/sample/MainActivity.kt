@@ -25,9 +25,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var contentView: View
+
     private val andyAdapter: AndyAdapter by lazy {
         AndyAdapter { position, view ->
-            dustEffectRenderer.composeView(view)
+            // For API 14-20 content is not full-screen (behind status bar),
+            // so we include status bar height as additional offset.
+            val contentViewLocation = intArrayOf(0, 0).apply {
+                contentView.getLocationOnScreen(this)
+                for (i in indices) {
+                    this[i] *= -1
+                }
+            }
+            dustEffectRenderer.composeView(view, contentViewLocation)
 
             val updatedAndyList = andyAdapter.currentList.toMutableList().apply {
                 removeAt(position)
@@ -44,7 +54,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContentView(createContentView())
+        contentView = createContentView()
+        setContentView(contentView)
         fillAndyList()
     }
 

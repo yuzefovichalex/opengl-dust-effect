@@ -51,6 +51,7 @@ import static javax.microedition.khronos.opengles.GL10.GL_TEXTURE_MAG_FILTER;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
@@ -59,6 +60,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.Size;
 
 import com.alexyuzefovich.dusteffect.utils.ShaderUtils;
 
@@ -145,7 +147,12 @@ public class DustEffectRenderer implements GLSurfaceView.Renderer {
         long currentTime = System.currentTimeMillis();
         for (Iterator<RenderInfo> iterator = renderInfos.iterator(); iterator.hasNext(); ) {
             RenderInfo renderInfo = iterator.next();
-            if (!renderInfo.isDataReady) {
+            if (!renderInfo.canBeRendered) {
+                iterator.remove();
+                continue;
+            }
+
+            if (!renderInfo.isReadyForRender) {
                 continue;
             }
             renderInfo.loadTextureIfNeeded();
@@ -194,10 +201,22 @@ public class DustEffectRenderer implements GLSurfaceView.Renderer {
         return true;
     }
 
-    public void composeView(@NonNull View view) {
+    /**
+     * Preparing to perform an animation for target View.
+     *
+     * @param view Target View.
+     * @param offset Additional offset for the View. Before animation, the Renderer finds
+     *               the View's position relative to the entire screen. If your GLSurfaceView
+     *               does not occupy the entire screen surface (for example, it is behind
+     *               the status bar), you can pass an additional offset relative to the beginning
+     *               of the screen as an array [x, y]. Note that the offset is added. For example,
+     *               if the GLSurfaceView lies directly behind the status bar, you should pass
+     *               a negative value for the height of the status bar: [0, -statusBarHeight].
+     * */
+    public void composeView(@NonNull View view, @Nullable @Size(2) int[] offset) {
         RenderInfo renderInfo = new RenderInfo(particleSize);
         renderInfos.add(renderInfo);
-        renderInfo.composeView(view);
+        renderInfo.composeView(view, offset);
     }
 
     private void glUniform1f(@NonNull String name, float param) {
@@ -215,8 +234,6 @@ public class DustEffectRenderer implements GLSurfaceView.Renderer {
 
         private final int particleSize;
 
-        private long animationStartTime = -1;
-
         private int columnCount;
         private int rowCount;
         private float textureLeft;
@@ -230,7 +247,9 @@ public class DustEffectRenderer implements GLSurfaceView.Renderer {
         @Nullable
         private FloatBuffer particlesIndicesBuffer;
 
-        private boolean isDataReady;
+        private long animationStartTime = -1;
+        private volatile boolean canBeRendered = true;
+        private volatile boolean isReadyForRender;
         private boolean isTextureLoaded;
 
 
@@ -271,25 +290,39 @@ public class DustEffectRenderer implements GLSurfaceView.Renderer {
             isTextureLoaded = true;
         }
 
-        public void composeView(@NonNull View view) {
-            animationStartTime = -1;
-            isDataReady = false;
-            isTextureLoaded = false;
-            textureId = 0;
+        public void composeView(@NonNull View view, @Nullable @Size(2) int[] offset) {
+            if (isReadyForRender) {
+                // Only one-shot usage is allowed.
+                return;
+            }
+
+            Rect viewVisibleRect = new Rect();
+            boolean isViewVisible = view.getLocalVisibleRect(viewVisibleRect);
+
+            if (!isViewVisible || viewVisibleRect.width() == 0 || viewVisibleRect.height() == 0) {
+                canBeRendered = false;
+                return;
+            }
 
             int[] viewLocation = new int[2];
             view.getLocationOnScreen(viewLocation);
 
-            columnCount = view.getWidth() / particleSize;
-            rowCount = view.getHeight() / particleSize;
-            textureLeft = viewLocation[0];
-            textureTop = viewLocation[1];
+            columnCount = viewVisibleRect.width() / particleSize;
+            rowCount = viewVisibleRect.height() / particleSize;
+            textureLeft = viewLocation[0] + viewVisibleRect.left;
+            textureTop = viewLocation[1] + viewVisibleRect.top;
+
+            if (offset != null && offset.length >= 2) {
+                textureLeft += offset[0];
+                textureTop += offset[1];
+            }
 
             ExecutorService executorService = Executors.newFixedThreadPool(2);
 
             executorService.submit(() -> {
-                Bitmap viewBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+                Bitmap viewBitmap = Bitmap.createBitmap(viewVisibleRect.width(), viewVisibleRect.height(), Bitmap.Config.ARGB_8888);
                 Canvas c = new Canvas(viewBitmap);
+                c.translate(-viewVisibleRect.left, -viewVisibleRect.top);
                 view.draw(c);
                 sourceBitmap = viewBitmap;
             });
@@ -316,7 +349,7 @@ public class DustEffectRenderer implements GLSurfaceView.Renderer {
                 ie.printStackTrace();
             }
 
-            isDataReady = true;
+            isReadyForRender = true;
         }
 
         public void recycle() {
