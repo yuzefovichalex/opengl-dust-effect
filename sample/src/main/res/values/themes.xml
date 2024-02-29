@@ -1,6 +1,3 @@
 <resources>
-    <style name="Theme.DustEffect" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">#15000000</item>
-        <item name="android:navigationBarColor">#15000000</item>
-    </style>
+    <style name="Theme.DustEffect" parent="Theme.Material3.DayNight.NoActionBar"/>
 </resources>

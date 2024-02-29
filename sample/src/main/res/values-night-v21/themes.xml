@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.DustEffect" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">#15000000</item>

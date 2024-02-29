@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.alexyuzefovich.dusteffect"
-        minSdk = 21
+        minSdk = 14
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
