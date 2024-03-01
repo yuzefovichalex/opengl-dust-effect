@@ -109,7 +109,9 @@ function removeElementWithAnimation(element) {
         requestDraw();
         element.parentNode.removeChild(element);
     };
-    image.src = document.getElementById('andy').src;
+    html2canvas(element, { scale: 2 }).then(canvas => {
+        image.src = canvas.toDataURL('image/png');
+    });
 }
 
 function loadTexture(image) {
@@ -141,8 +143,8 @@ function getImageData(image) {
 
 function bindParameters(element) {
     const rect = element.getBoundingClientRect();
-    const textureWidth = Math.round(512 / particleSize);
-    const textureHeight = Math.round(512 / particleSize);
+    const textureWidth = Math.round(rect.width / particleSize);
+    const textureHeight = Math.round(rect.height / particleSize);
     const textureLeft = element.offsetLeft;
     const textureTop = element.offsetTop;
     particlesCount = textureWidth * textureHeight;

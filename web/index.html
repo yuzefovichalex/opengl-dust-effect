@@ -13,6 +13,17 @@
             align-items: center;
         }
 
+        #removable {
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            padding: 64px;
+        }
+
+        #andy {
+            width: 512px;
+            height: 512px;
+        }
+
         canvas { 
             position: absolute;
             width: 100%;
@@ -23,11 +34,12 @@
             pointer-events: none;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="container">
         <div id="removable">
-            <img id="andy" src="assets/andy.png" width="512" height="512"/>
+            <img id="andy" src="assets/andy.png"/>
         </div>
     </div>
     <canvas id="canvas"></canvas>
