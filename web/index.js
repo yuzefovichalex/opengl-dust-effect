@@ -45,6 +45,9 @@ async function main() {
 async function init() {
     resizeCanvasToDisplaySize(gl.canvas);
 
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     gl.clearColor(0, 0, 0, 0);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
