@@ -8,15 +8,15 @@ This is a simple showcase of how the element "disintegration" effect (aka "Thano
 
 The shader code in the project is loaded from files, so just running `index.html` won't work because of the CORS error. To run the project you will need a simple server: you may use a [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for VS Code. Just install the extension and click *Go Live*.
 
-## Settings
+## Configuration
 
-There are two main settings placed at the top of `index.js` file:
+There are two main parameters placed at the top of `index.js` file:
 - `duration` - Total duration of the Dust Effect animation in milliseconds.
 - `particleSize` - The size of the particle.
 
 Play around with these values to get different look that most fit to your needs. There is an example of the effect with `duration` set to **3600** and **18000**:
 
-![Dust Effect for Web Showcase](samples/dust-effect-webgl.mp4)
+![Dust Effect for Web Showcase](samples/dust-effect-webgl.gif)
 
 ## License
 
