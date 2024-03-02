@@ -1,22 +1,22 @@
 # Dust Effect for Web (WebGL)
 
-![Dust Effect for Web](samples/dust-effect-webgl.png)
+![Dust Effect for Web](art/dust-effect-webgl.png)
 
-This is a simple showcase of how the element "disintegration" effect (aka "Thanos"/Dust) can be implemented using OpenGL on the Web (WebGL).
+This is a simple showcase of how the UI-element (e.g. *div*) "disintegration" effect (aka "Thanos"/Dust) can be implemented using OpenGL on the Web (WebGL).
 
 ## How to run
 
 The shader code in the project is loaded from files, so just running `index.html` won't work because of the CORS error. To run the project you will need a simple server: you may use a [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for VS Code. Just install the extension and click *Go Live*.
 
-## Configuration
+## Usage
 
 There are two main parameters placed at the top of `index.js` file:
 - `duration` - Total duration of the Dust Effect animation in milliseconds.
-- `particleSize` - The size of the particle.
+- `particleSize` - The size of the particle in pixels.
 
-Play around with these values to get different look that most fit to your needs. There is an example of the effect with `duration` set to **3600** and **18000**:
+Play around with these values to get different look that most fit to your needs. When using small particle sizes, it is recommended to enable hardware acceleration in the browser. There is an example of the effect with `particleSize` set to **1** (hardware acceleration is enabled) and `duration` set to **3600** and **18000**:
 
-![Dust Effect for Web Showcase](samples/dust-effect-webgl.gif)
+![Dust Effect for Web Showcase](art/dust-effect-webgl.gif)
 
 ## License
 
