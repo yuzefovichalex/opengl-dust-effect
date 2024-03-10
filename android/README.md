@@ -6,6 +6,8 @@ This is a simple showcase of how the UI-element (e.g. *View*) "disintegration" e
 
 ## Usage
 
+> To test an app without building a project, you can use a ready-made [build](apk/dust-effect-debug.apk).
+
 The project contains two modules:
 - `sample` - A simple app to demonstrate the effect in action and how to use it.
 - `dust-effect` - The implementation of the effect: `DustEffectRenderer` + shaders.
